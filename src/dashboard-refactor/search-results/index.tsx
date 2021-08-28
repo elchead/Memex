@@ -22,6 +22,7 @@ import SearchTypeSwitch, {
 import SearchCopyPaster, {
     Props as SearchCopyPasterProps,
 } from './components/search-copy-paster'
+import DeleteAll from './components/delete-all'
 import ExpandAllNotes from './components/expand-all-notes'
 import DayResultGroup from './components/day-result-group'
 import PageResult from './components/page-result'
@@ -73,6 +74,7 @@ export type Props = RootState &
         listDetailsProps: ListDetailsProps
         pagePickerProps: PagePickerAugdProps
         onShowAllNotesClick: React.MouseEventHandler
+        deleteBtn: (day, pageId) => void
         noResultsType: NoResultsType
         onDismissMobileAd: React.MouseEventHandler
         onDismissOnboardingMsg: React.MouseEventHandler
@@ -406,6 +408,14 @@ export default class SearchResultsContainer extends PureComponent<Props> {
         return <NoResults title="No Results">¯\_(ツ)_/¯</NoResults>
     }
 
+    private deleteAll(that: SearchResultsContainer) {
+        for (const { day, pages } of Object.values(that.props.results)) {
+            pages.allIds.map((id) => {
+                that.props.deleteBtn(day, id)
+            })
+        }
+    }
+
     private renderResultsByDay() {
         if (this.props.noResultsType != null) {
             return this.renderNoResults()
@@ -509,7 +519,7 @@ export default class SearchResultsContainer extends PureComponent<Props> {
                 {this.props.isSubscriptionBannerShown && (
                     <PioneerPlanBanner
                         onHideClick={this.props.onDismissSubscriptionBanner}
-                        width='fill-available'
+                        width="fill-available"
                     />
                 )}
                 {this.props.selectedListId != null && (
@@ -523,6 +533,9 @@ export default class SearchResultsContainer extends PureComponent<Props> {
                                 <SearchCopyPaster
                                     {...this.props.searchCopyPasterProps}
                                 />
+                                <DeleteAll
+                                    onClick={() => this.deleteAll(this)}
+                                ></DeleteAll>
                                 {this.renderListShareBtn()}
                                 <ExpandAllNotes
                                     isEnabled={this.props.areAllNotesShown}

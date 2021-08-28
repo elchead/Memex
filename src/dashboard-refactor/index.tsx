@@ -483,6 +483,12 @@ export class DashboardContainer extends StatefulUIElement<
                         isShown: !searchResults.isListShareMenuShown,
                     })
                 }
+                deleteBtn={(day, pageId) => {
+                    this.processEvent('setDeletingPageArgs', {
+                        day,
+                        pageId,
+                    })
+                }}
                 openListShareModal={() =>
                     this.processEvent('setShareListId', {
                         listId: listsSidebar.selectedListId,
@@ -596,11 +602,12 @@ export class DashboardContainer extends StatefulUIElement<
                                 pageId
                             ].isCopyPasterShown,
                         }),
-                    onTrashBtnClick: (day, pageId) => () =>
+                    onTrashBtnClick: (day, pageId) => () => {
                         this.processEvent('setDeletingPageArgs', {
                             day,
                             pageId,
-                        }),
+                        })
+                    },
                     onShareBtnClick: (day, pageId) => () =>
                         this.processEvent('setPageShareMenuShown', {
                             day,
